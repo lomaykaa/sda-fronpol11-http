@@ -183,6 +183,76 @@ return fetchPromise.then((response) => {
     }
   }) 
 } */
+}
+
+class Users {
+  constructor() {
+    this.url = 'https://jsonplaceholder.typicode.com/users';
+  }
+
+  getAllUsers() {
+    const options = {
+      method: 'GET'
+    };
+
+    const fetchPromise = fetch(this.url, options);
+    return fetchPromise.then((response) => response.json());
+  }
+
+  addUser(newUser) {
+    const options = {
+      method: 'POST',
+      body: JSON.stringify (newUser)
+    }
+
+    const fetchPromise = fetch(this.url, options);
+    return fetchPromise.then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        return {
+          error: 'Wystapil blad podczas dodawania uzytkownbnika',
+          status: response.status,
+          statusText: response.statusText
+        }
+      }
+    })
+  }
+
+  deleteUser(userId) {
+    const options = {
+      method: 'DELETE'
+    }
+
+    const url = `${this.url}/${userId}`;
+
+    const fetchPromise = fetch(url, options);
+
+    return fetchPromise.then((response) => response.json());
+  }
+
+  editUser(editedUser) {
+    const options = {
+      method: 'PUT',
+      body: JSON.stringify(editedUser)
+    }
+
+    const url = `${this.url}/${editedUser.id}`
+
+    const fetchPromise = fetch(url, options);
+
+    return fetchPromise.then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        return {
+          error: 'Wystapil blad podczas edycji uzytkownika',
+          status: response.status,
+          statusText: response.statusText
+        } 
+      }
+    })
+  }
 
 
 }
@@ -197,6 +267,11 @@ posts.getAllPosts().then((json) => {
 const comments = new Comments();
 comments.getAllComments().then((json) => {
   console.log('JSON zawierajacy dane odnosnie komentarzy w formacie JSON', json)
+});
+
+const users = new Users();
+users.getAllUsers().then((json) => {
+  console.log('JSON zawierajacy dane odnosnie uzytkownikow w formacie JSON', json)
 });
 
 posts.deletePost(5).then(console.log);
@@ -236,3 +311,26 @@ comments.editComment({
 
 posts.getCommentsForPost(5).then(console.log);
 
+users.deleteUser(8).then(console.log);
+
+users.addUser({
+  id: 11,
+  userId: 11,
+  name: 'Nowy uzytkownik',
+  username: 'nowy',
+  email: 'nowyuzytkownik@nowy.com',
+  addres: 'Kowalska 1',
+  phone: '37347859696',
+  website: 'nowyuzytkownik.org',
+  company: {
+    name: 'Nowa-Firma',
+    catchPhrase: 'Nowi uzytkownicy nowe dane',
+    bs: 'pozyskiwanie nowych uzytkownikow'
+  }}).then(console.log);
+
+  users.editUser({
+    id: 5,
+    userId: 5,
+    name: 'Edytowana nazwa',
+    username: 'Edytowana nazwa uzytkownika'
+  }).then(console.log);
